@@ -11,7 +11,7 @@ License: GPL2
 
 function tn_virtual_categories_pre_get_posts($query)
 {
-	if ( $query->is_main_query() ) {
+	if ( $query->is_main_query() && array_key_exists("cat", $query->query)) {
 		if ($query->query["cat"]=="5") 
 		{ 
 			$query->query["cat"]="4"; 
@@ -21,3 +21,23 @@ function tn_virtual_categories_pre_get_posts($query)
 }
 
 add_action('pre_get_posts', 'tn_virtual_categories_pre_get_posts');
+
+
+function tn_virtual_categories_get_terms_filter($cache, $taxonomies, $args)
+{
+	if (!in_array("category", $taxonomies)) return $cache;
+	$test = new stdClass;
+	$test->term_id = "550";
+	$test->name = "Timo";
+	$test->slug = "timo";
+	$test->term_group = "0";
+	$test->term_taxonomy_id = "550";
+	$test->taxonomy = "cateory";
+	$test->description = "";
+	$test->parent = "0";
+	$test->count = "0";
+	$cache[] = $test;
+	return $cache;
+}
+
+add_filter("get_terms", "tn_virtual_categories_get_terms_filter", 10, 3);
