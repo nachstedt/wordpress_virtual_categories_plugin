@@ -26,17 +26,26 @@ add_action('pre_get_posts', 'tn_virtual_categories_pre_get_posts');
 function tn_virtual_categories_get_terms_filter($cache, $taxonomies, $args)
 {
 	if (!in_array("category", $taxonomies)) return $cache;
-	$test = new stdClass;
-	$test->term_id = "550";
-	$test->name = "Timo";
-	$test->slug = "timo";
-	$test->term_group = "0";
-	$test->term_taxonomy_id = "550";
-	$test->taxonomy = "cateory";
-	$test->description = "";
-	$test->parent = "0";
-	$test->count = "0";
-	$cache[] = $test;
+	foreach ($cache as $id=>$term)
+	{
+		if ($term->term_id == "16") 
+		{
+			unset($cache[$id]);
+		}
+	}
+//	$test = new stdClass;
+//	$test->term_id = "550";
+//	$test->name = "Timo";
+//	$test->slug = "timo";
+//	$test->term_group = "0";
+//	$test->term_taxonomy_id = 550;
+//	$test->taxonomy = "category";
+//	$test->description = "test description";
+//	$test->parent = "0";
+//	$test->count = "0";
+	//$cache[] = $test;
+	//var_dump($args);
+	//var_dump($cache);
 	return $cache;
 }
 
