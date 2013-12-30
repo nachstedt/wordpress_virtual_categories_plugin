@@ -33,7 +33,7 @@ class etax_TaxonomyManager
     public static function display_edit_form()
     {
         $taxonomy = get_taxonomy($_REQUEST["taxonomy"]);
-        $options = etax_Options::get_taxonomy_options($taxonomy->name);
+        $options = etax_Options::get_builtin_taxonomy_options($taxonomy->name);
         $url = add_query_arg(
                 array("page" => "taxonomy_edit"),
                 get_admin_url(0, 'admin.php'));
@@ -64,7 +64,7 @@ class etax_TaxonomyManager
         echo "<tbody>\n";
         foreach ($taxonomies as $taxonomy)
         {
-            $options = etax_Options::get_taxonomy_options($taxonomy->name);
+            $options = etax_Options::get_builtin_taxonomy_options($taxonomy->name);
             $url =  add_query_arg(
                         array(
                             "page" => "taxonomy_edit",
@@ -98,11 +98,9 @@ class etax_TaxonomyManager
                 break;
             case 'save':
                 $taxonomy = get_taxonomy($_REQUEST["taxonomy"]);
-                $options = get_option("etax_settings", array());
-                if (!array_key_exists($taxonomy->name, $options))
-                    $options[$taxonomy->name] = array();
-                $options[$taxonomy->name]["disabled"] = array_key_exists("disabled", $_REQUEST);
-                update_option("etax_settings", $options);
+                $options["disabled"] = array_key_exists("disabled", $_REQUEST);
+                etax_Options::set_builtin_taxonomy_options($taxonomy->name, 
+                        $options);
                 $url =  add_query_arg(
                     array(
                         "page" => "taxonomy_edit",

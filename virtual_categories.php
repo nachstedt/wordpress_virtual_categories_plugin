@@ -15,28 +15,27 @@ require_once(plugin_dir_path( __FILE__ ) . 'includes/options.php');
 
 class TN_Enhanced_Taxonomies_Plugin
 {
+    private $original_taxonomies = NULL;
+    
     public function __construct() 
     {
-        self::register_hooks();
+        $this->register_hooks();
         etax_TaxonomyManager::register_hooks();
     }
     
-    public static function init_hook()
+    public function init_hook()
     {
-        if (array_key_exists('page', $_GET) && $_GET["page"] == "taxonomy_edit") 
-        { 
-            return;
-        }
-        foreach (etax_Options::get_disabled_taxonomies() as $taxonomy_name)
+        $this->original_taxonomies = get_taxonomies();
+        foreach (etax_Options::get_disabled_builtin_taxonomies() as $taxonomy_name)
         {
             register_taxonomy($taxonomy_name, array());
         }
     }
     
-    public static function register_hooks() 
+    public function register_hooks() 
     {
-        add_action('init', array(__CLASS__, 'init_hook'));
-    }
+        add_action('init', array($this, 'init_hook'));
+    }    
 }
 
 $tn_enhanced_taxonomies_plugin = new TN_Enhanced_Taxonomies_Plugin();

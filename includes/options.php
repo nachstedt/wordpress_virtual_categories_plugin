@@ -8,11 +8,10 @@
 
 class etax_Options
 {
-    public static function get_disabled_taxonomies()
+    public static function get_disabled_builtin_taxonomies()
     {
-        $db_entry = self::get_db_entry();
         $disabled_taxonomies = array();
-        foreach ($db_entry as $taxonomy_name => $options)
+        foreach (self::get_builtin_options() as $taxonomy_name => $options)
         {
             if (self::arr_get($options, "disabled", False))
             {
@@ -22,22 +21,37 @@ class etax_Options
         return $disabled_taxonomies;
     }
     
-    public static function get_taxonomy_options($taxonomy_name)
+    public static function get_builtin_taxonomy_options($taxonomy_name)
     {
         $db_options = self::arr_get(
-                self::get_db_entry(), 
+                self::get_builtin_options(),
                 $taxonomy_name, 
                 array());
         $options["disabled"] = self::arr_get($db_options, "disabled", FALSE);
         return $options;
     }
-   
+    
+    public static function set_builtin_taxonomy_options($taxonomy_name, $options)
+    {
+        $db_options = array();
+        $db_options["disabled"] = self::arr_get($options, "disabled", False);
+        $db_entry = self::get_db_entry();
+        $db_entry["builtin"] = self::get_builtin_options();
+        $db_entry["builtin"][$taxonomy_name] = $db_options;
+        self::save_db_entry($db_entry);
+    }
+ 
+    private static $db_entry = NULL;
+  
     private static function arr_get($array, $key, $default) {
         return isset($array[$key]) ? $array[$key] : $default;
     }
  
-    private static $db_entry = NULL;
-
+    private static function get_builtin_options()
+    {
+        return self::arr_get(self::get_db_entry(), "builtin", array());
+    }
+    
     private static function get_db_entry()
     {
         if (self::$db_entry == NULL)
@@ -45,5 +59,11 @@ class etax_Options
             self::$db_entry = get_option("etax_settings", array());
         }
         return self::$db_entry;
+    }
+    
+    private static function save_db_entry($db_entry)
+    {
+        update_option("etax_settings", $db_entry);
+        self::$db_entry = $db_entry;
     }
 }
