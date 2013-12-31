@@ -11,6 +11,7 @@ License: GPL2
 
 require_once(plugin_dir_path( __FILE__ ) . 'includes/taxonomy_manager.php');
 require_once(plugin_dir_path( __FILE__ ) . 'includes/options.php');
+require_once(plugin_dir_path( __FILE__ ) . 'includes/templates.php');
 
 
 class TN_Enhanced_Taxonomies_Plugin

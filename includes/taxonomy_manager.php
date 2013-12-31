@@ -51,36 +51,23 @@ class etax_TaxonomyManager
     public static function display_overview()
     {
         $taxonomies = get_taxonomies(array(), "options", "AND");
-        echo '<div class="wrap">';
-        echo '<h2>Taxonomies</h2>';
-        echo '<table class="widefat">';
-        echo "<thead>\n";
-        echo "<tr>\n";
-        echo "<th>Name</th>\n";
-        echo "<th>Builtin</th>\n";
-        echo "<th>Disabled</th>\n";
-        echo "</tr>\n";
-        echo "</thead>\n";
-        echo "<tbody>\n";
+        $args["builtin_taxonomies"] = array();
         foreach ($taxonomies as $taxonomy)
         {
             $options = etax_Options::get_builtin_taxonomy_options($taxonomy->name);
-            $url =  add_query_arg(
-                        array(
-                            "page" => "taxonomy_edit",
-                            "action" => "edit",
-                            "taxonomy" => $taxonomy->name
-                        ),
-                        get_admin_url(0, "admin.php"));
-            echo '<tr class="alternate">';
-            echo "<td><a href='$url'> {$taxonomy->name} </td>\n";
-            echo "<td>" . ($taxonomy->_builtin ? "yes" : "no"). "</td>\n";
-            echo "<td>" . ($options["disabled"] ? "yes" : "no"). "</td>\n";
-            echo "<tr>\n";
+            $data = array();
+            $data["name"] = $taxonomy->name;
+            $data["url"] = add_query_arg(
+                array(
+                    "page" => "taxonomy_edit",
+                    "action" => "edit",
+                    "taxonomy" => $taxonomy->name
+                ),
+                get_admin_url(0, "admin.php"));
+            $data["disabled"] = $options["disabled"];
+            $args["builtin_taxonomies"][] = $data;
         }
-        echo "</tbody>\n";
-        echo "</table>\n";
-        echo "</div>";
+        etax_Templates::taxonomy_manager_overview($args);
     }
     
     public static function taxonomies_menu_page_callback() 
