@@ -11,7 +11,7 @@ class etax_Templates
     
     public static function taxonomy_manager_overview($args) 
     {
-?>
+?> 
 <div class='wrap'>
     <h2>Taxonomies</h2>
     <div id='col-container'>
@@ -27,16 +27,18 @@ class etax_Templates
                     </thead>
                     <tbody>
 <?php
+        $alternate = FALSE;
         foreach ($args["builtin_taxonomies"] as $taxonomy)
         {
 ?>
-                        <tr class="alternate">
+                        <tr class="<?php echo $alternate ? "alternate" : ""?>">
                             <td>
                                 <a href='<?php echo $taxonomy['url']; ?>'><?php echo $taxonomy['name'];?></a>
                             </td>
                             <td><?php echo $taxonomy["disabled"] ? "yes" : "no" ?></td>
-                        <tr>
+                        </tr>
 <?php
+            $alternate = !$alternate;
         }
 ?>
                     </tbody>
