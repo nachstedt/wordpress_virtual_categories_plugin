@@ -32,27 +32,34 @@ class etax_TaxonomyManager
     
     public static function display_edit_form()
     {
-        $taxonomy = get_taxonomy($_REQUEST["taxonomy"]);
-        $options = etax_Options::get_builtin_taxonomy_options($taxonomy->name);
-        $url = add_query_arg(
+        $taxonomy_name = $_REQUEST["taxonomy"];
+        global $tn_enhanced_taxonomies_plugin;
+        $builtin = array_key_exists(
+                $taxonomy_name, 
+                $tn_enhanced_taxonomies_plugin->get_original_taxonomies());
+        $options = $builtin 
+                ? etax_Options::get_builtin_taxonomy_options($taxonomy_name)
+                : etax_Options::get_taxonomy_options($taxonomy_name);
+        $args = array(
+            "name" => $taxonomy_name,
+            "builtin" => $builtin,
+            "form-url" => add_query_arg(
                 array("page" => "taxonomy_edit"),
-                get_admin_url(0, 'admin.php'));
-        echo "<h2>{$taxonomy->labels->name}</h2>\n";
-        echo "<form action='$url' method='post'>\n";
-        echo "<input type='hidden' name='action' value='save'/>";
-        echo "<input type='hidden' name='taxonomy' value='{$taxonomy->name}' />";
-        echo "<input type='hidden' name='noheader' value='1' />";
-        $checked = $options["disabled"] ? "checked" : "";
-        echo "<input type='checkbox' name='disabled' $checked/> disabled";
-        echo "<input type='submit' value='Update' />";
-        echo "</form>\n";        
+                get_admin_url(0, 'admin.php')),
+            "disabled" => $options["disabled"]
+        );
+        etax_Templates::taxonomy_edit($args);
     }
     
     public static function display_overview()
     {
-        $taxonomies = get_taxonomies(array(), "options", "AND");
+        global $tn_enhanced_taxonomies_plugin;
+        $args["form-url"] = add_query_arg(
+                array("page" => "taxonomy_edit"),
+                get_admin_url(0, 'admin.php'));
         $args["builtin_taxonomies"] = array();
-        foreach ($taxonomies as $taxonomy)
+        $original = $tn_enhanced_taxonomies_plugin->get_original_taxonomies();
+        foreach ($original as $taxonomy)
         {
             $options = etax_Options::get_builtin_taxonomy_options($taxonomy->name);
             $data = array();
@@ -77,16 +84,28 @@ class etax_TaxonomyManager
 
         switch ($action) 
         {
-            case 'overview':
-                self::display_overview();
-                break;
+            case "add-taxonomy":
+                $data["name"] = $_REQUEST["taxonomy-slug"];
+                $data["label"] = $_REQUEST["taxonomy-label-name"];
+                $data["type"] = $_REQUEST["taxonomy-type"];
+                etax_Options::add_taxonomy($data);
+                wp_redirect(add_query_arg(
+                    array(
+                        "page" => "taxonomy_edit",
+                        "action" => "edit",
+                        "taxonomy" => $data["name"]),
+                    get_admin_url(0, 'admin.php')));                
             case "edit":
                 self::display_edit_form();
                 break;
+            case 'overview':
+                self::display_overview();
+                break;
             case 'save':
-                $taxonomy = get_taxonomy($_REQUEST["taxonomy"]);
+                $taxonomy_name = $_REQUEST["taxonomy"];
                 $options["disabled"] = array_key_exists("disabled", $_REQUEST);
-                etax_Options::set_builtin_taxonomy_options($taxonomy->name, 
+                etax_Options::set_builtin_taxonomy_options(
+                        $taxonomy_name, 
                         $options);
                 $url =  add_query_arg(
                     array(

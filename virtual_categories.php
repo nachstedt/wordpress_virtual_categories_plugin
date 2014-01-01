@@ -24,12 +24,27 @@ class TN_Enhanced_Taxonomies_Plugin
         etax_TaxonomyManager::register_hooks();
     }
     
+    public function get_original_taxonomies()
+    {
+        return $this->original_taxonomies;
+    }
+    
     public function init_hook()
     {
-        $this->original_taxonomies = get_taxonomies();
+        $this->original_taxonomies = get_taxonomies(array(), "objects");
         foreach (etax_Options::get_disabled_builtin_taxonomies() as $taxonomy_name)
         {
             register_taxonomy($taxonomy_name, array());
+        }
+        foreach (etax_Options::get_additional_taxonomies() as $taxonomy)
+        {
+            register_taxonomy(
+                    $taxonomy["name"],
+                    NULL,
+                    array(
+                        "labels"=> $taxonomy["labels"]
+                        )
+                    );
         }
     }
     

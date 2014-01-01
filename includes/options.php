@@ -8,6 +8,26 @@
 
 class etax_Options
 {
+    public static function add_taxonomy($data)
+    {
+        $db_entry = self::get_db_entry();
+        if (!array_key_exists('additional', $db_entry))
+            $db_entry["additional"] = array();
+        $db_entry["additional"][$data["name"]] = array(
+            "name" => $data["name"],
+            "labels" => array(
+                "name" => $data["label"]
+                )
+            );
+        self::save_db_entry($db_entry);
+    }
+    
+    public static function get_additional_taxonomies()
+    {
+        $db_entry = self::get_db_entry();
+        return $db_entry["additional"];
+    }
+    
     public static function get_disabled_builtin_taxonomies()
     {
         $disabled_taxonomies = array();
@@ -31,6 +51,16 @@ class etax_Options
         return $options;
     }
     
+    public static function get_taxonomy_options($taxonomy_name)
+    {
+        $data = self::arr_get(
+                self::get_additional_taxonomies(), 
+                $taxonomy_name, 
+                array());
+        $options["disabled"] = self::arr_get($data, "disabled", FALSE);
+        return $options;
+    }
+    
     public static function set_builtin_taxonomy_options($taxonomy_name, $options)
     {
         $db_options = array();
@@ -47,12 +77,12 @@ class etax_Options
         return isset($array[$key]) ? $array[$key] : $default;
     }
  
-    private static function get_builtin_options()
+    public static function get_builtin_options()
     {
         return self::arr_get(self::get_db_entry(), "builtin", array());
     }
     
-    private static function get_db_entry()
+    public static function get_db_entry()
     {
         if (self::$db_entry == NULL)
         {
@@ -61,7 +91,7 @@ class etax_Options
         return self::$db_entry;
     }
     
-    private static function save_db_entry($db_entry)
+    public static function save_db_entry($db_entry)
     {
         update_option("etax_settings", $db_entry);
         self::$db_entry = $db_entry;
