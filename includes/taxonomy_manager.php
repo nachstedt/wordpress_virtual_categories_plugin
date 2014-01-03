@@ -75,11 +75,19 @@ class etax_TaxonomyManager
             $args["builtin_taxonomies"][] = $data;
         }
         $args["additional_taxonomies"] = array();
+        var_dump(etax_Options::get_db_entry());
         foreach (etax_Options::get_additional_taxonomies() as $taxonomy)
         {
             $data = array(
                 'name' => $taxonomy['name'],
-                'type' => $taxonomy['type']
+                'type' => "?",
+                'url' => add_query_arg(
+                array(
+                    "page" => "taxonomy_edit",
+                    "action" => "edit",
+                    "taxonomy" => $taxonomy["name"]
+                ),
+                get_admin_url(0, "admin.php"))
             );
             $args['additional_taxonomies'][] = $data;
         }
@@ -113,9 +121,19 @@ class etax_TaxonomyManager
             case 'save':
                 $taxonomy_name = $_REQUEST["taxonomy"];
                 $options["disabled"] = array_key_exists("disabled", $_REQUEST);
-                etax_Options::set_builtin_taxonomy_options(
-                        $taxonomy_name, 
-                        $options);
+                global $tn_enhanced_taxonomies_plugin;
+                $originals = $tn_enhanced_taxonomies_plugin->get_original_taxonomies();
+                if (array_key_exists($taxonomy_name, $originals)){
+                    etax_Options::set_builtin_taxonomy_options(
+                            $taxonomy_name, 
+                            $options);                    
+                } else {
+                    $options["name"] = $_REQUEST["name"];
+                    $options["labels"] = array('name' => 'test');
+                    etax_Options::set_taxonomy_options(
+                            $taxonomy_name, 
+                            $options);
+                }
                 $url =  add_query_arg(
                     array(
                         "page" => "taxonomy_edit",

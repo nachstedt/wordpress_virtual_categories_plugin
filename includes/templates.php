@@ -28,7 +28,7 @@ class etax_Templates
 <?php if ($args["builtin"]) { ?>
             <?php echo $args["name"] ?>
 <?php } else { ?>
-            <input type="text" name="name" />
+            <input type="text" name="name" value="<?php echo $args["name"] ?>"/>
 <?php } ?>
             <p class="description">
               Internal name of the taxonomy in slug form
@@ -43,7 +43,6 @@ class etax_Templates
               Builtin categories cannot be modified but only disabled
             </p>
           </td>
-          
         </tr>
         <tr>
           <th scope="row">Disable Taxonomy</th>

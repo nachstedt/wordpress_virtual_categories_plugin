@@ -38,9 +38,10 @@ class TN_Enhanced_Taxonomies_Plugin
         }
         foreach (etax_Options::get_additional_taxonomies() as $taxonomy)
         {
+            var_dump($taxonomy);
             register_taxonomy(
                     $taxonomy["name"],
-                    NULL,
+                    'post',
                     array(
                         "labels"=> $taxonomy["labels"]
                         )

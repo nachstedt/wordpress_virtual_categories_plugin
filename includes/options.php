@@ -71,6 +71,21 @@ class etax_Options
         self::save_db_entry($db_entry);
     }
  
+    public static function set_taxonomy_options($taxonomy_name, $options)
+    {
+        $db_options = array();
+        $db_options["disabled"] = self::arr_get($options, "disabled", False);
+        $db_options["name"] = $options['name'];
+        $labels = array();
+        if (isset ($options["labels"]["name"]))
+            $labels['name'] = $options['labels']["name"];
+        $db_options["labels"] = $labels;
+        $db_entry = self::get_db_entry();
+        $db_entry["additional"] = self::get_additional_taxonomies();
+        $db_entry["additional"][$taxonomy_name] = $db_options;
+        self::save_db_entry($db_entry);
+    }
+    
     private static $db_entry = NULL;
   
     private static function arr_get($array, $key, $default) {
