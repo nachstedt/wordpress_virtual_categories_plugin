@@ -110,6 +110,23 @@ class etax_Templates
               <th>Name</th>
               <th>Type</th>
             </tr>
+<?php
+        $alternate = FALSE;
+        foreach($args['additional_taxonomies'] as $taxonomy)
+        {
+?>
+            <tr class="<?php echo $alternate ? "alternate" : ""?>">
+              <td>
+                <a href='<?php echo $taxonomy['url']; ?>'>
+                  <?php echo $taxonomy['name'];?>
+                </a>  
+              </td>
+              <td><?php echo $taxonomy['type'] ?></td>
+            </tr>
+<?php            
+            $alternate = !$alternate;
+        }
+?>
           </thead>
         </table>
       </div>

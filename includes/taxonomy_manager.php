@@ -74,6 +74,15 @@ class etax_TaxonomyManager
             $data["disabled"] = $options["disabled"];
             $args["builtin_taxonomies"][] = $data;
         }
+        $args["additional_taxonomies"] = array();
+        foreach (etax_Options::get_additional_taxonomies() as $taxonomy)
+        {
+            $data = array(
+                'name' => $taxonomy['name'],
+                'type' => $taxonomy['type']
+            );
+            $args['additional_taxonomies'][] = $data;
+        }
         etax_Templates::taxonomy_manager_overview($args);
     }
     
