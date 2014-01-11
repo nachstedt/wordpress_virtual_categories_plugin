@@ -82,7 +82,8 @@ class etax_Options
         $db_options["labels"] = $labels;
         $db_entry = self::get_db_entry();
         $db_entry["additional"] = self::get_additional_taxonomies();
-        $db_entry["additional"][$taxonomy_name] = $db_options;
+		unset ($db_entry["additional"][$taxonomy_name]);
+        $db_entry["additional"][$db_options["name"]] = $db_options;
         self::save_db_entry($db_entry);
     }
     

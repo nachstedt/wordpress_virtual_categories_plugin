@@ -11,6 +11,7 @@ class etax_Templates
     
     public static function taxonomy_edit($args)
     { 
+		$disabled = $args["builtin"] ? "disabled" : "";
 ?>
 <div class="wrap">
   <h2>Edit Taxonomy</h2>
@@ -25,11 +26,8 @@ class etax_Templates
             <label for="name">Name</label>
           </th>
           <td>
-<?php if ($args["builtin"]) { ?>
-            <?php echo $args["name"] ?>
-<?php } else { ?>
-            <input type="text" name="name" value="<?php echo $args["name"] ?>"/>
-<?php } ?>
+            <input type="text" name="name" value="<?php echo $args["name"] ?>" 
+				<?php echo $disabled?>/>
             <p class="description">
               Internal name of the taxonomy in slug form
             </p>
@@ -44,12 +42,43 @@ class etax_Templates
             </p>
           </td>
         </tr>
+		<tr>
+          <th scop="row">Labels</th>
+          <td>
+            <p>
+              <label for="labels-name">
+                General name for the taxonomy, usually plural:
+              </label>
+            </p>
+            <input type="text" name="labels[name]" id="labels-name"
+                   value="<?php echo $args["labels"]["name"] ?>" 
+                   <?php echo $disabled?>/>
+            <p>
+              <label for="labels-singular_name">
+                Name for one object of this taxonomy:
+              </label>
+            </p>
+            <input type="text" name="labels[singular_name]" 
+                   id="labels-singular_name"
+                   value="<?php echo $args["labels"]["singular_name"] ?>" 
+                   <?php echo $disabled?>/>
+            <p>
+              <label for="labels-menu_name">
+                The menu name text:
+              </label>
+            </p>
+            <input type="text" name="labels[menu_name]" 
+                   id="labels-singular_name"
+                   value="<?php echo $args["labels"]["menu_name"] ?>" 
+                   <?php echo $disabled?>/>
+          </td>
+		</tr>
         <tr>
           <th scope="row">Disable Taxonomy</th>
           <td>
             <fieldset>
               <label for="disabled">
-                <input type='checkbox' name='disabled' <?php 
+                <input type='checkbox' name='disabled' id="disabled" <?php 
                     echo $args["disabled"] ? "checked" : ""?> />
                 Disabled
               </label>      

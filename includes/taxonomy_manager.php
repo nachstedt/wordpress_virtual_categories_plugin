@@ -46,7 +46,8 @@ class etax_TaxonomyManager
             "form-url" => add_query_arg(
                 array("page" => "taxonomy_edit"),
                 get_admin_url(0, 'admin.php')),
-            "disabled" => $options["disabled"]
+            "disabled" => $options["disabled"],
+            "labels" => $options["labels"]
         );
         etax_Templates::taxonomy_edit($args);
     }
@@ -75,7 +76,6 @@ class etax_TaxonomyManager
             $args["builtin_taxonomies"][] = $data;
         }
         $args["additional_taxonomies"] = array();
-        var_dump(etax_Options::get_db_entry());
         foreach (etax_Options::get_additional_taxonomies() as $taxonomy)
         {
             $data = array(
@@ -92,7 +92,11 @@ class etax_TaxonomyManager
             $args['additional_taxonomies'][] = $data;
         }
         etax_Templates::taxonomy_manager_overview($args);
-    }
+        echo "<pre><code>\n";
+		var_dump(etax_Options::get_db_entry());
+		echo "</code></pre>\n";
+
+	}
     
     public static function taxonomies_menu_page_callback() 
     {
