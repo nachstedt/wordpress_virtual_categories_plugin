@@ -19,6 +19,7 @@ class etax_Templates
     <input type='hidden' name='action' value='save'/>
     <input type='hidden' name='taxonomy' value='<?php echo $args["name"]?>' />
     <input type='hidden' name='noheader' value='1' />
+    <h3>General</h3>
     <table class="form-table">
       <tbody>
         <tr>
@@ -26,7 +27,8 @@ class etax_Templates
             <label for="name">Name</label>
           </th>
           <td>
-            <input type="text" name="name" value="<?php echo $args["name"] ?>" 
+            <input type="text" name="name" id="name" 
+                   value="<?php echo $args["name"] ?>" 
 				<?php echo $disabled?>/>
             <p class="description">
               Internal name of the taxonomy in slug form
@@ -42,39 +44,8 @@ class etax_Templates
             </p>
           </td>
         </tr>
-		<tr>
-          <th scop="row">Labels</th>
-          <td>
-            <p>
-              <label for="labels-name">
-                General name for the taxonomy, usually plural:
-              </label>
-            </p>
-            <input type="text" name="labels[name]" id="labels-name"
-                   value="<?php echo $args["labels"]["name"] ?>" 
-                   <?php echo $disabled?>/>
-            <p>
-              <label for="labels-singular_name">
-                Name for one object of this taxonomy:
-              </label>
-            </p>
-            <input type="text" name="labels[singular_name]" 
-                   id="labels-singular_name"
-                   value="<?php echo $args["labels"]["singular_name"] ?>" 
-                   <?php echo $disabled?>/>
-            <p>
-              <label for="labels-menu_name">
-                The menu name text:
-              </label>
-            </p>
-            <input type="text" name="labels[menu_name]" 
-                   id="labels-singular_name"
-                   value="<?php echo $args["labels"]["menu_name"] ?>" 
-                   <?php echo $disabled?>/>
-          </td>
-		</tr>
         <tr>
-          <th scope="row">Disable Taxonomy</th>
+            <th scope="row"><label for="disabled">Disable Taxonomy</label></th>
           <td>
             <fieldset>
               <label for="disabled">
@@ -85,6 +56,193 @@ class etax_Templates
             </fieldset>  
           </td>
         </tr>
+      </tbody>
+    </table>
+    <h3>Labels</h3>
+    <table class="form-table">
+      <tbody>
+<?php
+            $labels = array(
+                array(
+                    "name" => "name",
+                    "label" => "Name",
+                    "text" => "General name for the taxonomy, usually plural.",
+                    "value" => $args["labels"]["name"],
+                    "default" => array(
+                        _x( 'Post Tags', 'taxonomy general name' ),
+                        _x( 'Categories', 'taxonomy general name' ))),
+                array(
+                    "name" => "singular_name",
+                    "label" => "Singular Name",
+                    "text" => "Name for one object of this taxonomy.",
+                    "value" => $args["labels"]["singular_name"],
+                    "default" => array(
+                        _x( 'Post Tag', 'taxonomy singular name'),
+                        _x( 'Category', 'taxonomy singular name'))),
+                array(
+                    "name" => "menu_name",
+                    "label" => "Menu Name",
+                    "value" => $args["labels"]["menu_name"],
+                    "default" => "same as Name"),
+                array(
+                    "name" => 'all_items',
+                    "label" => 'All Items',
+                    "value" => $args["labels"]["all_items"],
+                    "default" => array(
+                        __('All Tags'), 
+                        __('All Categories'))),
+                array(
+                    "name" => 'edit_item',
+                    "label" => "Edit Item",
+                    "value" => $args["labels"]["edit_item"],
+                    "default" => array(
+                        __( 'Edit Tag' ),
+                        __( 'Edit Category' ))),
+                array(
+                    "name" => 'view_item',
+                    "label" => "View Item",
+                    "value" => $args["labels"]["view_item"],
+                    "default" => array(
+                        __( 'View Tag' ),
+                        __( 'View Category' ))),
+                array(
+                    "name" => 'update_item',
+                    "label" => "Update Item",
+                    "value" => $args["labels"]["update_item"],
+                    "default" => array(
+                        __( 'Update Tag' ),
+                        __( 'Update Category' ))),
+                array(
+                    "name" => 'add_new_item',
+                    "label" => "Add New Item",
+                    "value" => $args["labels"]["add_new_item"],
+                    "default" => array(
+                        __( 'Add New Tag' ),
+                        __( 'Add New Category' ))),
+                array(
+                    "name" => 'new_item_name',
+                    "label" => 'New Item Name',
+                    "value" => $args['labels']['new_item_name'],
+                    "default" => array(
+                        __( 'New Tag Name' ),
+                        __( 'New Category Name' ))),
+                array(
+                    "name" => 'parent_item',
+                    "label" => 'Parent Item',
+                    "text" => "This string is not used on non-hierarchical "
+                              . "taxonomies such as post tags.",
+                    "value" => $args['labels']['parent_item'],
+                    "default" => array(
+                        NULL,
+                        __( 'Parent Category' )
+                    )),
+                array(
+                    "name" => 'parent_item_colon',
+                    "label" => 'Parent Item with colon',
+                    "text" => 'The same as parent item, but with colon : in '
+                              . 'the end',
+                    "value" => $args['labels']['parent_item_colon'],
+                    "default" => array(
+                        NULL,
+                        __( 'Parent Category:' ))),
+                array(
+                    "name" => 'search_items',
+                    "label" => 'Search Items',
+                    "value" => $args['labels']['search_items'],
+                    "default" => array(
+                        __( 'Search Tags' ),
+                        __( 'Search Categories' ))),
+                array(
+                    "name" => "popular_items",
+                    "label" => "Popular Items",
+                    "value" => $args["labels"]["popular_items"],
+                    "default" => array(
+                        __( 'Popular Tags' ),
+                        NULL)),
+                array(
+                    "name" => "separate_items_with_commas",
+                    "label" => "Separate Items with Commas",
+                    "text" => "The separate item with commas text used in the "
+                              . "taxonomy meta box. This string isn't used on "
+                              . "hierarchical taxonomies.",
+                    "value" => $args["labels"]["separate_items_with_commas"],
+                    "default" => array(
+                        __( 'Separate tags with commas' ),
+                        NULL)),
+                array(
+                    "name" => "add_or_remove_items",
+                    "label" => "Add or Remove Items",
+                    "text" => "The add or remove items text and used in the "
+                              . "meta box when JavaScript is disabled. This "
+                              . "string isn't used on hierarchical taxonomies.",
+                    "value" => $args["labels"]["add_or_remove_items"],
+                    "default" => array(
+                        __( 'Add or remove tags' ),
+                        NULL)),
+                array(
+                    "name" => "choose_from_most_used",
+                    "label" => "Choose from most used",
+                    "text" => "The choose from most used text used in the "
+                              . "taxonomy meta box. This string isn't used on "
+                              . "hierarchical taxonomies. ",
+                    "value" => $args["labels"]["choose_from_most_used"],
+                    "default" => array(
+                        __( 'Choose from the most used tags' ),
+                        NULL)),
+                array(
+                    "name" => "not_found",
+                    "label" => "Not Found",
+                    "text" => "the text displayed via clicking 'Choose from "
+                              . "the most used tags' in the taxonomy meta box "
+                              . "when no tags are available. This string isn't "
+                              . "used on hierarchical taxonomies.",
+                    "value" => $args["labels"]["not_found"],
+                    "default" => array(
+                        __( 'No tags found.' ),
+                        NULL))
+            );
+            foreach ($labels as $label)
+            {
+?>
+		<tr>
+          <th scop="row">
+            <label for="labels-<?php echo $label['name']?>"> 
+              <?php echo $label['label']?>
+            </label>
+          </th>
+          <td>
+            <input type="text" name="labels[<?php echo $label['name']?>]" 
+                   id="labels-<?php echo $label['name']?>" 
+                   value="<?php echo $label["value"]?>" 
+                   <?php echo $disabled?> />
+            <span class="description"> 
+                Default: 
+<?php           
+                if (is_array($label["default"]))
+                {
+                    echo '"' . $label['default'][0] 
+                         .'" / "' . $label['default'][1] . '"';
+                }
+                else
+                {
+                    echo $label['default'];
+                }
+?>
+            </span>
+<?php
+                if (isset($label['text']))
+                {
+?>
+            <p class="description"><?php echo $label['text']?></p>
+<?php
+                }
+?>
+          </td>
+        </tr>                
+<?php
+            }
+                    
+?>
       </tbody>
     </table>
     <p class="submit">

@@ -58,6 +58,18 @@ class etax_Options
                 $taxonomy_name, 
                 array());
         $options["disabled"] = self::arr_get($data, "disabled", FALSE);
+        $options["labels"] = array();
+        $labels_data = self::arr_get($data, "labels", array());
+        foreach (array(
+            'name', 'singular_name', 'menu_name', 'all_items', 
+            'edit_item', 'view_item', 'update_item', 'add_new_item', 
+            'new_item_name', 'parent_item', 'parent_item_colon', 'search_items',
+            'popular_items', 'separate_items_with_commas', 
+            'add_or_remove_items', 'choose_from_most_used', 'not_found') 
+                as $label)
+        {
+            $options['labels'][$label] = self::arr_get($labels_data, $label);
+        }
         return $options;
     }
     
@@ -89,7 +101,7 @@ class etax_Options
     
     private static $db_entry = NULL;
   
-    private static function arr_get($array, $key, $default) {
+    private static function arr_get($array, $key, $default=NULL) {
         return isset($array[$key]) ? $array[$key] : $default;
     }
  
